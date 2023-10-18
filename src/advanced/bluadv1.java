@@ -2,23 +2,33 @@ package advanced;
 
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
+import advanced.my_data;
+import advanced.enemy_data;
 
 public class bluadv1 extends AdvancedRobot {
 
-    //Enemy
-    double current_energy = 100;
+
 
     //My
 
-    double my_x = 0;
-    double my_y = 0;
+    double my_x = my_data.getMy_x();
+    double my_y = my_data.getMy_y();
+    double my_heading = my_data.my_RadarHeading;
 
-    double my_heading = 0;
-
-
+    //Enemy
+    double current_energy = 100;
+    double enemy_x = enemy_data.enemy_x;
+    double enemy_y = enemy_data.enemy_y;
+    double enemy_Distance = enemy_data.enemy_Distance;
+    double enemy_Bearing = enemy_data.enemy_Bearing;
+    double enemy_Heading = enemy_data.enemy_Heading;
+    double enemy_Velocity = enemy_data.enemy_Velocity;
+    double enemy_Energy = enemy_data.enemy_Energy;
 
     public void run() {
         setAdjustRadarForRobotTurn(true);
+
+
         while (true) {
             turnRadarRight(360);
         }
@@ -30,7 +40,8 @@ public class bluadv1 extends AdvancedRobot {
 
     @Override
     public void onScannedRobot(ScannedRobotEvent e) {
-        current_energy = e.getEnergy();
+        onScannedInit(e);
+        //
 
         double RelativeEnemyHeading = getHeading() - getRadarHeading() + e.getBearing();
         System.out.println("RELEHEAD: " + RelativeEnemyHeading);
@@ -48,6 +59,20 @@ public class bluadv1 extends AdvancedRobot {
             ahead(Math.random()*10+48 * minusplus);
             minusplus *=-1;
         }
+    }
+
+    public void onScannedInit(ScannedRobotEvent e){
+        my_data.my_x = getX();
+        my_data.my_y = getY();
+        my_data.my_RadarHeading = getRadarHeading();
+        enemy_data.enemy_Distance = e.getDistance();
+        enemy_data.enemy_Bearing = e.getBearing();
+        enemy_data.enemy_Heading = e.getHeading();
+        enemy_data.enemy_Velocity = e.getVelocity();
+        enemy_data.enemy_Energy = e.getEnergy();
+
+        enemy_data.setEnemy_x();
+        enemy_data.setEnemy_y();
     }
 
     public double move(ScannedRobotEvent event) {
